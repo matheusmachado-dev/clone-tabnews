@@ -28,5 +28,5 @@ Este repositório contém o desenvolvimento de um clone do site TabNews, uma pla
 
 ## DevOps e Infraestrutura
 - Git e GitHub
-- CI/CD (GitHub Actions ou outro)
-- Deploy em Vercel ou similar
+- CI/CD
+- Vercel
