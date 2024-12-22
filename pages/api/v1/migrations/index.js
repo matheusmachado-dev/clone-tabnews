@@ -10,10 +10,11 @@ export default async function migrations(request, response) {
     });
   }
 
-  let dbClient = await database.getNewClient();
+  let dbClient;
 
   try {
     dbClient = await database.getNewClient();
+
     const defaultMigrationsOptions = {
       dbClient: dbClient,
       dryRun: true,
@@ -22,11 +23,12 @@ export default async function migrations(request, response) {
       verbose: true,
       migrationsTable: "pgmigrations",
     };
+
     if (request.method === "GET") {
       const pendingMigrations = await migrationRunner(defaultMigrationsOptions);
-
       return response.status(200).json(pendingMigrations);
     }
+
     if (request.method === "POST") {
       const migratedMigrations = await migrationRunner({
         ...defaultMigrationsOptions,
