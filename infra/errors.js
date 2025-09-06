@@ -37,6 +37,7 @@ export class ServiceError extends Error {
     };
   }
 }
+
 export class ValidationError extends Error {
   constructor({ cause, message, action }) {
     super(message || "Um erro de validação ocorreu.", {
@@ -67,6 +68,26 @@ export class NotFoundError extends Error {
       action ||
       "Verifique se os parâmetros enviados na consulta estão corretos.";
     this.statusCode = 404;
+  }
+
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      action: this.action,
+      status_code: this.statusCode,
+    };
+  }
+}
+
+export class UnauthorizedError extends Error {
+  constructor({ cause, message, action }) {
+    super(message || "Usuário não autenticado.", {
+      cause,
+    });
+    this.name = "UnauthorizedError";
+    this.action = action || "Faça novamente o login para continuar.";
+    this.statusCode = 401;
   }
 
   toJSON() {
