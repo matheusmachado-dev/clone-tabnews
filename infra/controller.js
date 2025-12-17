@@ -20,6 +20,7 @@ function onErrorHandler(error, request, response) {
 
   if (error instanceof UnauthorizedError) {
     clearSessionCookie(response);
+    return response.status(error.statusCode).json(error);
   }
 
   const publicErrorObject = new InternalServerError({
