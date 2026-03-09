@@ -15,7 +15,7 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
     test("With nonexistent token", async () => {
       const response = await fetch("http://localhost:3000/api/v1/activations/7bd4a458-0a9a-42ff-aa14-5e68a293839d",
         {
-            method: "PATCH",
+          method: "PATCH",
         }
       );
 
@@ -42,7 +42,7 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
 
       const response = await fetch(`http://localhost:3000/api/v1/activations/${expiredActivationToken.id}`,
         {
-            method: "PATCH",
+          method: "PATCH",
         }
       );
 
@@ -63,7 +63,7 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
 
       const response1 = await fetch(`http://localhost:3000/api/v1/activations/${activationToken.id}`,
         {
-            method: "PATCH",
+          method: "PATCH",
         }
       );
 
@@ -71,7 +71,7 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
 
       const response2 = await fetch(`http://localhost:3000/api/v1/activations/${activationToken.id}`,
         {
-            method: "PATCH",
+          method: "PATCH",
         }
       );
 
@@ -92,7 +92,7 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
 
       const response = await fetch(`http://localhost:3000/api/v1/activations/${activationToken.id}`,
         {
-            method: "PATCH",
+          method: "PATCH",
         }
       );
 
@@ -101,12 +101,12 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
       const responseBody = await response.json();
 
       expect(responseBody).toEqual({
-       id: activationToken.id,
-       used_at: responseBody.used_at,
-       user_id: activationToken.user_id,
-       expires_at: activationToken.expires_at.toISOString(),
-       created_at: activationToken.created_at.toISOString(),
-       updated_at: responseBody.updated_at,
+        id: activationToken.id,
+        used_at: responseBody.used_at,
+        user_id: activationToken.user_id,
+        expires_at: activationToken.expires_at.toISOString(),
+        created_at: activationToken.created_at.toISOString(),
+        updated_at: responseBody.updated_at,
       });
 
       expect(uuidVersion(responseBody.id)).toBe(4);
@@ -129,6 +129,7 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
       expect(activatedUser.features).toEqual([
         "create:session",
         "read:session",
+        "update:user"
       ])
     });
     test("With valid token but akready activated user", async () => {
@@ -138,7 +139,7 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
 
       const response = await fetch(`http://localhost:3000/api/v1/activations/${activationToken.id}`,
         {
-            method: "PATCH",
+          method: "PATCH",
         }
       );
 
@@ -159,16 +160,16 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
       const user1 = await orchestrator.createUser();
       await orchestrator.activateUser(user1);
       const user1SessionObject = await orchestrator.createSession(user1.id)
-      
+
       const user2 = await orchestrator.createUser();
       const user2ActivationToken = await activation.create(user2.id)
 
       const response = await fetch(`http://localhost:3000/api/v1/activations/${user2ActivationToken.id}`,
         {
-            method: "PATCH",
-            headers: {
-              Cookie: `session_id=${user1SessionObject.token}`
-            }
+          method: "PATCH",
+          headers: {
+            Cookie: `session_id=${user1SessionObject.token}`
+          }
         }
       );
 
