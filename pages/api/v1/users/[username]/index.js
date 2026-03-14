@@ -17,7 +17,11 @@ async function getHandler(request, response) {
   const username = request.query.username;
   const userFound = await user.findOneByUsername(username);
 
-  const secureOutputValues = authorization.filterOutput(userTryingToGet, "read:user", userFound);
+  const secureOutputValues = authorization.filterOutput(
+    userTryingToGet,
+    "read:user",
+    userFound,
+  );
 
   return response.status(200).json(secureOutputValues);
 }
@@ -32,14 +36,19 @@ async function patchHandler(request, response) {
 
   if (!authorization.can(userTryingToPatch, "update:user", targetUser)) {
     throw new ForbiddenError({
-      message: 'Você não possui permissão para atualizar outro usuário.',
-      action: 'Verifique se você possui a feature necessária para atualizar outro usuário.'
-    })
+      message: "Você não possui permissão para atualizar outro usuário.",
+      action:
+        "Verifique se você possui a feature necessária para atualizar outro usuário.",
+    });
   }
 
   const updatedUser = await user.update(username, userInputValues);
 
-  const secureOutputValues = authorization.filterOutput(userTryingToGet, "read:user", updatedUser)
+  const secureOutputValues = authorization.filterOutput(
+    userTryingToGet,
+    "read:user",
+    updatedUser,
+  );
 
   return response.status(200).json(secureOutputValues);
 }

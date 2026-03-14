@@ -19,7 +19,11 @@ async function postHandler(request, response) {
 
   const activationToken = await activation.create(newUser.id);
 
-  const secureOutputValues = authorization.filterOutput(userTryingToGet, "read:user", newUser)
+  const secureOutputValues = authorization.filterOutput(
+    userTryingToGet,
+    "read:user",
+    newUser,
+  );
 
   await activation.sendEmailToUser(newUser, activationToken);
 

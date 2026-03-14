@@ -1,4 +1,3 @@
-
 import { InternalServerError } from "infra/errors.js";
 
 const availableFeatures = [

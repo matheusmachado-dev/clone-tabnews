@@ -5,7 +5,7 @@ import authorization from "models/authorization";
 
 const router = createRouter();
 
-router.use(controller.injectAnonymousOrUser)
+router.use(controller.injectAnonymousOrUser);
 router.get(getHandler);
 
 export default router.handler(controller.errorHandler);
@@ -40,9 +40,13 @@ async function getHandler(request, response) {
         opened_connections: databaseOpenedConnectionsValue,
       },
     },
-  }
+  };
 
-  const secureOutputValues = authorization.filterOutput(userTryingToGet, "read:status", statusObject)
+  const secureOutputValues = authorization.filterOutput(
+    userTryingToGet,
+    "read:status",
+    statusObject,
+  );
 
   response.status(200).json(secureOutputValues);
 }
