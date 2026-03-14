@@ -1,6 +1,34 @@
-import email from "infra/email";
+
+import { InternalServerError } from "infra/errors.js";
+
+const availableFeatures = [
+  // USER
+  "create:user",
+  "read:user",
+  "read:user:self",
+  "update:user",
+  "update:user:others",
+
+  // SESSION
+  "create:session",
+  "read:session",
+
+  // ACTIVATION_TOKEN
+  "read:activation_token",
+
+  // MIGRATION
+  "create:migration",
+  "read:migration",
+
+  // STATUS
+  "read:status",
+  "read:status:all",
+];
 
 function can(user, feature, resource) {
+  validateUser(user);
+  validateFeature(feature);
+
   let authorized = false;
 
   if (user.features.includes(feature)) {
@@ -19,6 +47,10 @@ function can(user, feature, resource) {
 }
 
 function filterOutput(user, feature, resource) {
+  validateUser(user);
+  validateFeature(feature);
+  validateResource(resource);
+
   if (feature === "read:user") {
     return {
       id: resource.id,
@@ -41,6 +73,7 @@ function filterOutput(user, feature, resource) {
       };
     }
   }
+
   if (feature === "read:session") {
     if (user.id === resource.user_id) {
       return {
@@ -53,6 +86,7 @@ function filterOutput(user, feature, resource) {
       };
     }
   }
+
   if (feature === "read:activation_token") {
     return {
       id: resource.id,
@@ -70,9 +104,10 @@ function filterOutput(user, feature, resource) {
         path: migration.path,
         name: migration.name,
         timestamp: migration.timestamp,
-      }
+      };
     });
   }
+
   if (feature === "read:status") {
     const output = {
       updated_at: resource.updated_at,
@@ -83,10 +118,39 @@ function filterOutput(user, feature, resource) {
         },
       },
     };
+
     if (can(user, "read:status:all")) {
-      output.dependencies.database.version = resource.dependencies.database.version;
+      output.dependencies.database.version =
+        resource.dependencies.database.version;
     }
-    return output
+
+    return output;
+  }
+}
+
+function validateUser(user) {
+  if (!user || !user.features) {
+    throw new InternalServerError({
+      cause: "É necessário fornecer `user` no model `authorization`.",
+    });
+  }
+}
+
+function validateFeature(feature) {
+  if (!feature || !availableFeatures.includes(feature)) {
+    throw new InternalServerError({
+      cause:
+        "É necessário fornecer uma `feature` conhecida no model `authorization`.",
+    });
+  }
+}
+
+function validateResource(resource) {
+  if (!resource) {
+    throw new InternalServerError({
+      cause:
+        "É necessário fornecer um `resource` em `authorization.filterOutput()`.",
+    });
   }
 }
 
