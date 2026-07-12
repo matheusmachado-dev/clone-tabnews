@@ -140,18 +140,21 @@ describe("POST /api/v1/users", () => {
       await orchestrator.activateUser(user1);
       const user1SessionObject = await orchestrator.createSession(user1);
 
-      const user2Response = await fetch(`${webserver.getOrigin()}/api/v1/users`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Cookie: `session_id=${user1SessionObject.token}`,
+      const user2Response = await fetch(
+        `${webserver.getOrigin()}/api/v1/users`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Cookie: `session_id=${user1SessionObject.token}`,
+          },
+          body: JSON.stringify({
+            username: "usuariologado",
+            email: "usuariologado@curso.dev",
+            password: "senha123",
+          }),
         },
-        body: JSON.stringify({
-          username: "usuariologado",
-          email: "usuariologado@curso.dev",
-          password: "senha123",
-        }),
-      });
+      );
 
       expect(user2Response.status).toBe(403);
 

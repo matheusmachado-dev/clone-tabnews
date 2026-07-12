@@ -4,7 +4,6 @@ import user from "models/user.js";
 import activation from "models/activation";
 import authorization from "models/authorization";
 
-
 export default createRouter()
   .use(controller.injectAnonymousOrUser)
   .post(controller.canRequest("create:user"), postHandler)
